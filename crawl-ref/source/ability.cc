@@ -2628,6 +2628,12 @@ static spret _do_ability(const ability_def& abil, bool fail)
     case ABIL_ELYVILON_LESSER_HEALING:
     case ABIL_ELYVILON_GREATER_HEALING:
     {
+	if(you.species == SP_DEEP_DWARF)
+	{
+	   mpr("Deep Dwarves cannot receive godly healing!");
+	   break;
+	}
+
         fail_check();
         int pow = 0;
         if (abil.ability == ABIL_ELYVILON_LESSER_HEALING)
