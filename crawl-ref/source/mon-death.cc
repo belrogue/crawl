@@ -2258,7 +2258,7 @@ item_def* monster_die(monster& mons, killer_type killer,
 		        mprf("You healed: %d HP from killing the monster!", hp_heal);
 		    if (you.overflow_healing_dd > 30)
 		    {
-			    you.overflow_healing_dd = 0;
+			    you.overflow_healing_dd -= 30;
 			    // Allocate an item to play with.
 			    int thing_created = get_mitm_slot();
 			    if (thing_created == NON_ITEM)
