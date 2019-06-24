@@ -1136,7 +1136,7 @@ int player_regen()
         rr = 0;
 
     // Trog's Hand. This circumvents sickness or inhibited regeneration.
-    if (you.duration[DUR_TROGS_HAND])
+    if (you.duration[DUR_TROGS_HAND] && you.species != SP_DEEP_DWARF)
         rr += 100;
 
     return rr;
