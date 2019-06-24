@@ -2405,7 +2405,7 @@ static spret _do_ability(const ability_def& abil, bool fail)
         if (result != spret::success)
             return result;
 
-        if (damage > 0)
+        if (damage > 0 && you.species != SP_DEEP_DWARF)
         {
             mpr("You feel life flooding into your body.");
             inc_hp(damage);
