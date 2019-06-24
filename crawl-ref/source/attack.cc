@@ -1567,7 +1567,7 @@ bool attack::apply_damage_brand(const char *what)
         {
             obvious_effect = true;
 
-            if (attacker->is_player())
+            if (attacker->is_player() && you.species != SP_DEEP_DWARF)
                 canned_msg(MSG_GAIN_HEALTH);
             else if (attacker_visible)
             {
@@ -1583,9 +1583,12 @@ bool attack::apply_damage_brand(const char *what)
                 }
             }
 
-            dprf(DIAG_COMBAT, "Vampiric Healing: damage %d, healed %d",
-                 damage_done, hp_boost);
-            attacker->heal(hp_boost);
+	    if (!attacker->is_player() || you.species != SP_DEEP_DWARF)
+            {
+               dprf(DIAG_COMBAT, "Vampiric Healing: damage %d, healed %d",
+                    damage_done, hp_boost);
+               attacker->heal(hp_boost);
+	    }
         }
         break;
     }
