@@ -2275,7 +2275,14 @@ item_def* monster_die(monster& mons, killer_type killer,
 			       item_colour(item);
 
 			       move_item_to_grid(&thing_created, you.pos());
-			       
+
+			       const bool was_known = item_type_known(item);
+			       if (!was_known)
+			       {
+				       set_ident_flags(item, ISFLAG_IDENT_MASK);
+				       set_ident_type(item, true);
+			       }
+
 		     	       mpr("You brewed an ambrosia potion from your overflow!");
 			    }
 		    }
