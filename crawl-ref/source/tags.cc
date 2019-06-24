@@ -1667,6 +1667,9 @@ static void tag_construct_you(writer &th)
     CrawlVector rng_states = generators_to_vector();
     rng_states.write(th);
 
+    // Marshall DD overflow
+    marshallUnsigned(th, you.overflow_healing_dd);
+
     CANARY;
 
     // don't let vault caching errors leave a normal game with sprint scoring
@@ -3708,6 +3711,9 @@ static void tag_read_you(reader &th)
 #if TAG_MAJOR_VERSION == 34
     }
 #endif
+
+    	// Unmarshall DD healing
+    	you.overflow_healing_dd = unmarshallUnsigned(th);
 
     EAT_CANARY;
 

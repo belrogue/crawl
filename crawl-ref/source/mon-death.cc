@@ -2221,30 +2221,75 @@ item_def* monster_die(monster& mons, killer_type killer,
 
             // Divine health and mana restoration doesn't happen when
             // killing born-friendly monsters.
+	    if (gives_player_xp && you.get_mutation_level(MUT_HEAL_ON_KILL))
+	    {
+		    mprf(MSGCH_DIAGNOSTICS, "Heal on kill!");
+	    }
             if (gives_player_xp
-                && (have_passive(passive_t::restore_hp)
+                && you.get_mutation_level(MUT_HEAL_ON_KILL)
+		|| (
+		    (have_passive(passive_t::restore_hp)
                     || have_passive(passive_t::mp_on_kill)
                     || have_passive(passive_t::restore_hp_mp_vs_evil)
                        && mons.evil())
-                && !mons_is_object(mons.type)
-                && !player_under_penance()
-                && (random2(you.piety) >= piety_breakpoint(0)
+                   && !mons_is_object(mons.type)
+                   && !player_under_penance()
+                   && (random2(you.piety) >= piety_breakpoint(0)
 #if TAG_MAJOR_VERSION == 34
-                    || you_worship(GOD_PAKELLAS)
+                       || you_worship(GOD_PAKELLAS)
 #endif
-                   )
+                      )
+		   )
                 )
             {
                 int hp_heal = 0, mp_heal = 0;
 
-                if (have_passive(passive_t::restore_hp))
-                {
+		if (you.get_mutation_level(MUT_HEAL_ON_KILL))
+		{
                     hp_heal = mons.get_experience_level()
                         + random2(mons.get_experience_level());
+
+		    if (you.hp_max < you.hp + hp_heal)
+		    {
+		        you.overflow_healing_dd += (you.hp + hp_heal - you.hp_max);
+		        mprf("You add %d HP to your overflow pool, which is now at %d HP.", you.hp + hp_heal - you.hp_max, you.overflow_healing_dd);
+		    }
+		    else
+		        mprf("You healed: %d HP from killing the monster!", hp_heal);
+		    if (you.overflow_healing_dd > 5)
+		    {
+			    you.overflow_healing_dd = 0;
+			    // Allocate an item to play with.
+			    int thing_created = get_mitm_slot();
+			    if (thing_created == NON_ITEM)
+			    {
+				mprf(MSGCH_DIAGNOSTICS, "Could not allocate ambrosia!");
+			    }
+			    else
+			    {
+			       item_def& item(mitm[thing_created]);
+
+                               item.base_type = OBJ_POTIONS;
+                               item.sub_type  = POT_AMBROSIA;
+                               item.quantity  = 1;
+			       item_colour(item);
+
+			       move_item_to_grid(&thing_created, you.pos());
+			       
+		     	       mpr("You brewed an ambrosia potion from your overflow!");
+			    }
+		    }
+
+		}
+                if (have_passive(passive_t::restore_hp))
+                {
+		    if(you.species != SP_DEEP_DWARF)
+                       hp_heal = mons.get_experience_level() + random2(mons.get_experience_level());
                 }
                 if (have_passive(passive_t::restore_hp_mp_vs_evil))
                 {
-                    hp_heal = random2(1 + 2 * mons.get_experience_level());
+		    if(you.species != SP_DEEP_DWARF)
+                        hp_heal = random2(1 + 2 * mons.get_experience_level());
                     mp_heal = random2(2 + mons.get_experience_level() / 3);
                 }
 

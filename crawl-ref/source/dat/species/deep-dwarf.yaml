@@ -51,6 +51,7 @@ mutations:
   1:
     MUT_NO_REGENERATION: 1
     MUT_PASSIVE_MAPPING: 1
+    MUT_HEAL_ON_KILL: 1
   9:
     MUT_PASSIVE_MAPPING: 1
   14:

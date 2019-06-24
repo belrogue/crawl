@@ -454,6 +454,8 @@ public:
     // Number of viewport refreshes.
     unsigned int frame_no;
 
+    // Overflow healing for DD
+    unsigned int overflow_healing_dd;
 
     // ---------------------
     // The save file itself.

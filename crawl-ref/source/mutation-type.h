@@ -73,6 +73,8 @@ enum mutation_type
     MUT_HERBIVOROUS,
     MUT_HURL_DAMNATION,
 
+    MUT_HEAL_ON_KILL,
+
     MUT_FAST,
     MUT_FAST_METABOLISM,
 #if TAG_MAJOR_VERSION == 34
