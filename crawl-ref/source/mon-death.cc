@@ -2221,10 +2221,6 @@ item_def* monster_die(monster& mons, killer_type killer,
 
             // Divine health and mana restoration doesn't happen when
             // killing born-friendly monsters.
-	    if (gives_player_xp && you.get_mutation_level(MUT_HEAL_ON_KILL))
-	    {
-		    mprf(MSGCH_DIAGNOSTICS, "Heal on kill!");
-	    }
             if (gives_player_xp
                 && you.get_mutation_level(MUT_HEAL_ON_KILL)
 		|| (
@@ -2246,15 +2242,14 @@ item_def* monster_die(monster& mons, killer_type killer,
 
 		if (you.get_mutation_level(MUT_HEAL_ON_KILL))
 		{
-                    hp_heal = mons.get_experience_level()
-                        + random2(mons.get_experience_level());
+                    hp_heal = div_rand_round(mons.get_experience_level() + random2(mons.get_experience_level()), 2);
 
 		    if (you.hp_max < you.hp + hp_heal)
 		    {
 		        you.overflow_healing_dd += (you.hp + hp_heal - you.hp_max);
-		        mprf("You add %d HP to your overflow pool, which is now at %d HP.", you.hp + hp_heal - you.hp_max, you.overflow_healing_dd);
+		        mprf("You healed %d HP and add %d HP to your overflow pool, which is now at %d HP.", you.hp_max - you.hp, you.hp + hp_heal - you.hp_max, you.overflow_healing_dd);
 		    }
-		    else
+		    else if(hp_heal > 0)
 		        mprf("You healed: %d HP from killing the monster!", hp_heal);
 		    if (you.overflow_healing_dd > 30)
 		    {
