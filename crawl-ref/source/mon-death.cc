@@ -2247,7 +2247,10 @@ item_def* monster_die(monster& mons, killer_type killer,
 		    if (you.hp_max < you.hp + hp_heal)
 		    {
 		        you.overflow_healing_dd += (you.hp + hp_heal - you.hp_max);
-		        mprf("You healed %d HP and add %d HP to your overflow pool, which is now at %d HP.", you.hp_max - you.hp, you.hp + hp_heal - you.hp_max, you.overflow_healing_dd);
+			if(you.hp_max > you.hp)
+	   	           mprf("You healed %d HP and add %d HP to your overflow pool, which is now at %d HP.", you.hp_max - you.hp, you.hp + hp_heal - you.hp_max, you.overflow_healing_dd);
+			else
+	   	           mprf("You add %d HP to your overflow pool, which is now at %d HP.", you.hp + hp_heal - you.hp_max, you.overflow_healing_dd);
 		    }
 		    else if(hp_heal > 0)
 		        mprf("You healed: %d HP from killing the monster!", hp_heal);
