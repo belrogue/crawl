@@ -23,6 +23,7 @@
 #include "message.h"
 #include "mutation.h"
 #include "nearby-danger.h"
+#include "notes.h"
 #include "player-stats.h"
 #include "potion-type.h"
 #include "prompt.h"
@@ -488,6 +489,8 @@ public:
         const int ambrosia_turns = 3 + random2(8);
         if (confuse_player(ambrosia_turns, false, true))
         {
+	    if(you.species == SP_DEEP_DWARF)
+                take_note(Note(NOTE_MESSAGE, 0, 0, "Consumed an ambrosia potion."), false);
             print_potion_heal_message();
             mprf("You feel%s invigorated.",
                  you.duration[DUR_AMBROSIA] ? " more" : "");

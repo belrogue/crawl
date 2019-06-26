@@ -2282,6 +2282,7 @@ item_def* monster_die(monster& mons, killer_type killer,
 			       }
 
 		     	       mpr("You brewed an ambrosia potion from your overflow!");
+			       take_note(Note(NOTE_MESSAGE, 0, 0, "Brewed an ambrosia potion from overflow."), false);
 			    }
 		    }
 
