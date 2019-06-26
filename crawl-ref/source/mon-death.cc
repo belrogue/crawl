@@ -2281,8 +2281,10 @@ item_def* monster_die(monster& mons, killer_type killer,
 				       set_ident_type(item, true);
 			       }
 
-		     	       mpr("You brewed an ambrosia potion from your overflow!");
-			       take_note(Note(NOTE_MESSAGE, 0, 0, "Brewed an ambrosia potion from overflow."), false);
+		     	       mprf("You brewed an ambrosia potion from your overflow!");
+			       char buf[500];
+			       sprintf(buf, "Brewed an ambrosia potion from overflow. Max HP: %d.", you.hp_max);
+			       take_note(Note(NOTE_MESSAGE, 0, 0, buf), false);
 			    }
 		    }
 

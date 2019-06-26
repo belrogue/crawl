@@ -490,7 +490,11 @@ public:
         if (confuse_player(ambrosia_turns, false, true))
         {
 	    if(you.species == SP_DEEP_DWARF)
-                take_note(Note(NOTE_MESSAGE, 0, 0, "Consumed an ambrosia potion."), false);
+	    {
+		char buf[500];
+		sprintf(buf, "Consumed an ambrosia potion. Max HP: %d.", you.hp_max);
+                take_note(Note(NOTE_MESSAGE, 0, 0, buf), false);
+	    }
             print_potion_heal_message();
             mprf("You feel%s invigorated.",
                  you.duration[DUR_AMBROSIA] ? " more" : "");
