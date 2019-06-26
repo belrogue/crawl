@@ -5079,7 +5079,7 @@ player::player()
 
     last_view_update = 0;
 
-    overflow_healing_dd = 0;
+    overflow_healing_dd = 30;
 
     spell_letter_table.init(-1);
     ability_letter_table.init(ABIL_NON_ABILITY);
