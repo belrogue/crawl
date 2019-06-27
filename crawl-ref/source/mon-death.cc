@@ -3,6 +3,7 @@
  * @brief Contains monster death functionality, including unique code.
 **/
 
+#include <cmath>
 #include "AppHdr.h"
 
 #include "mon-death.h"
@@ -2242,7 +2243,9 @@ item_def* monster_die(monster& mons, killer_type killer,
 
 		if (you.get_mutation_level(MUT_HEAL_ON_KILL))
 		{
-                    hp_heal = div_rand_round(mons.get_experience_level() + random2(mons.get_experience_level()), 2);
+		    int healing_factor = exper_value(mons);
+	   	    mprf("Healing factor: %d", healing_factor);
+                    hp_heal = rand_round(10 * random2(1 + healing_factor) / sqrt(you.experience + 1));
 
 		    if (you.hp_max < you.hp + hp_heal)
 		    {
