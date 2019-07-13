@@ -2244,14 +2244,15 @@ item_def* monster_die(monster& mons, killer_type killer,
 		if (you.get_mutation_level(MUT_HEAL_ON_KILL))
 		{
 		    int healing_factor = exper_value(mons);
-	   	    mprf("Healing factor: %d", healing_factor);
-            hp_heal = div_rand_round(1 + healing_factor * healing_factor, 
-                    you.experience + 1);
+//	   	    mprf("Healing factor: %d", healing_factor);
+            hp_heal = rand_round(healing_factor / log2(you.experience + 2));
 		    if(hp_heal > 0)
 		    {
                 char buf[500];
-      		    sprintf(buf, "Raw Heal HP: %d. Player XP: %d. ", hp_heal,
-                    you.experience);
+      		    sprintf(buf, "Monster: %s. Monster ID: %d. Monster XP: %d. "
+                        "Raw Heal HP: %d. " "Player XP: %d. ", 
+                        mons.name(DESC_PLAIN).c_str(), mons.get_client_id(), 
+                        hp_heal, you.experience);
                 take_note(Note(NOTE_MESSAGE, 0, 0, buf), false);
 		    }
 
@@ -2259,9 +2260,14 @@ item_def* monster_die(monster& mons, killer_type killer,
 		    {
 		        you.overflow_healing_dd += (you.hp + hp_heal - you.hp_max);
 			if(you.hp_max > you.hp)
-	   	           mprf("You healed %d HP and add %d HP to your overflow pool, which is now at %d HP.", you.hp_max - you.hp, you.hp + hp_heal - you.hp_max, you.overflow_healing_dd);
+	   	           mprf("You healed %d HP and add %d HP to your overflow pool, "
+                           "which is now at %d HP.", you.hp_max - you.hp, 
+                           you.hp + hp_heal - you.hp_max, 
+                           you.overflow_healing_dd);
 			else
-	   	           mprf("You add %d HP to your overflow pool, which is now at %d HP.", you.hp + hp_heal - you.hp_max, you.overflow_healing_dd);
+	   	           mprf("You add %d HP to your overflow pool, which is now at "
+                           "%d HP.", you.hp + hp_heal - you.hp_max, 
+                           you.overflow_healing_dd);
 		    }
 		    else if(hp_heal > 0)
 		        mprf("You healed: %d HP from killing the monster!", hp_heal);
@@ -2304,7 +2310,8 @@ item_def* monster_die(monster& mons, killer_type killer,
                 if (have_passive(passive_t::restore_hp))
                 {
 		    if(you.species != SP_DEEP_DWARF)
-                       hp_heal = mons.get_experience_level() + random2(mons.get_experience_level());
+                       hp_heal = mons.get_experience_level() + 
+                           random2(mons.get_experience_level());
                 }
                 if (have_passive(passive_t::restore_hp_mp_vs_evil))
                 {
