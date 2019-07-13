@@ -2245,7 +2245,15 @@ item_def* monster_die(monster& mons, killer_type killer,
 		{
 		    int healing_factor = exper_value(mons);
 	   	    mprf("Healing factor: %d", healing_factor);
-                    hp_heal = rand_round(10 * random2(1 + healing_factor) / sqrt(you.experience + 1));
+            hp_heal = div_rand_round(1 + healing_factor * healing_factor, 
+                    you.experience + 1);
+		    if(hp_heal > 0)
+		    {
+                char buf[500];
+      		    sprintf(buf, "Raw Heal HP: %d. Player XP: %d. ", hp_heal,
+                    you.experience);
+                take_note(Note(NOTE_MESSAGE, 0, 0, buf), false);
+		    }
 
 		    if (you.hp_max < you.hp + hp_heal)
 		    {
@@ -2257,40 +2265,41 @@ item_def* monster_die(monster& mons, killer_type killer,
 		    }
 		    else if(hp_heal > 0)
 		        mprf("You healed: %d HP from killing the monster!", hp_heal);
-		    if (you.overflow_healing_dd > 30)
+		    while (you.overflow_healing_dd > 30)
 		    {
-			    you.overflow_healing_dd -= 30;
-			    // Allocate an item to play with.
-			    int thing_created = get_mitm_slot();
-			    if (thing_created == NON_ITEM)
-			    {
-				mprf(MSGCH_DIAGNOSTICS, "Could not allocate ambrosia!");
-			    }
-			    else
-			    {
-			       item_def& item(mitm[thing_created]);
-
-                               item.base_type = OBJ_POTIONS;
-                               item.sub_type  = POT_AMBROSIA;
-                               item.quantity  = 1;
-			       item_colour(item);
-
-			       move_item_to_grid(&thing_created, you.pos());
-
-			       const bool was_known = item_type_known(item);
-			       if (!was_known)
-			       {
-				       set_ident_flags(item, ISFLAG_IDENT_MASK);
-				       set_ident_type(item, true);
-			       }
-
-		     	       mprf("You brewed an ambrosia potion from your overflow!");
-			       char buf[500];
-			       sprintf(buf, "Brewed an ambrosia potion from overflow. Max HP: %d.", you.hp_max);
-			       take_note(Note(NOTE_MESSAGE, 0, 0, buf), false);
-			    }
+                you.overflow_healing_dd -= 30;
+                // Allocate an item to play with.
+                int thing_created = get_mitm_slot();
+                if (thing_created == NON_ITEM)
+                {
+                mprf(MSGCH_DIAGNOSTICS, "Could not allocate ambrosia!");
+                }
+                else
+                {
+                item_def& item(mitm[thing_created]);
+                
+                item.base_type = OBJ_POTIONS;
+                item.sub_type  = POT_AMBROSIA;
+                item.quantity  = 1;
+                item_colour(item);
+                
+                move_item_to_grid(&thing_created, you.pos());
+                
+                const bool was_known = item_type_known(item);
+                if (!was_known)
+                {
+                       set_ident_flags(item, ISFLAG_IDENT_MASK);
+                       set_ident_type(item, true);
+                }
+                
+                mprf("You brewed an ambrosia potion from your overflow!");
+                char buf[500];
+                sprintf(buf, 
+                        "Brewed an ambrosia potion from overflow. Max HP: %d.", 
+                        you.hp_max);
+                take_note(Note(NOTE_MESSAGE, 0, 0, buf), false);
+                }
 		    }
-
 		}
                 if (have_passive(passive_t::restore_hp))
                 {

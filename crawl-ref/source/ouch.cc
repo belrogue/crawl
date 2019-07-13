@@ -910,6 +910,13 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         }
         you.source_damage += dam;
 
+        if(dam > 0)
+        {
+            char buf[500];
+            sprintf(buf, "Damage taken: %d HP. Player XP: %d.", dam,
+                    you.experience);
+            take_note(Note(NOTE_MESSAGE, 0, 0, buf), false);
+        }
         dec_hp(dam, true);
 
         // Even if we have low HP messages off, we'll still give a
