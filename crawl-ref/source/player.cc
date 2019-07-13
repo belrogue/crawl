@@ -4636,7 +4636,7 @@ static void _dec_elixir_hp(int delay)
         you.duration[DUR_ELIXIR_HEALTH] = 0;
 
     int heal = (delay * you.hp_max / 10) / BASELINE_DELAY;
-    if (!you.duration[DUR_DEATHS_DOOR])
+    if (!you.duration[DUR_DEATHS_DOOR] && you.species != SP_DEEP_DWARF)
         inc_hp(heal);
 }
 
