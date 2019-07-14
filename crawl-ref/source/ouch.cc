@@ -914,10 +914,14 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
         {
             char buf[500];
             const monster *m = monster_by_mid(source);
-            sprintf(buf, "Monster: %s. Client ID: %d. Damage taken: %d HP."
-                    " Player XP: %d.", m->name(DESC_PLAIN).c_str(), 
-                    m->get_client_id(), dam, you.experience);
-            take_note(Note(NOTE_MESSAGE, 0, 0, buf), false);
+            if(m)
+            {
+                sprintf(buf, "Monster: %s. Client ID: %d. Monster XP: %d. "
+                        "Damage taken: %d HP. Player XP: %d.", 
+                        m->name(DESC_PLAIN).c_str(), m->get_client_id(), 
+                        exper_value(*m), dam, you.experience);
+                take_note(Note(NOTE_MESSAGE, 0, 0, buf), false);
+            }
         }
         dec_hp(dam, true);
 
