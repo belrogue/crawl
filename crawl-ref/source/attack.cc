@@ -1567,8 +1567,11 @@ bool attack::apply_damage_brand(const char *what)
         {
             obvious_effect = true;
 
-            if (attacker->is_player() && you.species != SP_DEEP_DWARF)
-                canned_msg(MSG_GAIN_HEALTH);
+            if (attacker->is_player())
+            {
+                if(you.species != SP_DEEP_DWARF)
+                    canned_msg(MSG_GAIN_HEALTH);
+            }
             else if (attacker_visible)
             {
                 if (defender->is_player())
