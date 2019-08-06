@@ -2243,16 +2243,30 @@ item_def* monster_die(monster& mons, killer_type killer,
 
 		if (you.get_mutation_level(MUT_HEAL_ON_KILL))
 		{
+            double playerXL = you.get_experience_level() + 
+                get_exp_progress() / 100.0;
+
 		    int healing_factor = exper_value(mons);
-//	   	    mprf("Healing factor: %d", healing_factor);
-            hp_heal = rand_round(healing_factor / log2(you.experience + 2));
+            // Reverse stepdown for experience
+            if (healing_factor > 750)
+                healing_factor = 3 * healing_factor - 1500;
+            if (healing_factor > 100)
+                healing_factor = (4 * healing_factor - 100) / 3;
+
+            double basic_healing = healing_factor 
+                / (mons.get_hit_dice() * mons.get_hit_dice());
+            double xl_hd_decay = pow(2, 2 * (mons.get_hit_dice() - playerXL) / 
+                    playerXL);
+
+            hp_heal = rand_round(basic_healing * xl_hd_decay);
+
 		    if(hp_heal > 0)
 		    {
                 char buf[500];
-      		    sprintf(buf, "Monster: %s. Monster ID: %d. Monster XP: %d. "
+      		    sprintf(buf, "Monster: %s. Client ID: %d. Monster XP: %d. "
                         "Raw Heal HP: %d. " "Player XP: %d. ", 
-                        mons.name(DESC_PLAIN).c_str(), mons.get_client_id(), 
-                        hp_heal, you.experience);
+                        mons.name(DESC_PLAIN).c_str(), mons.get_client_id(),
+                        healing_factor, hp_heal, you.experience);
                 take_note(Note(NOTE_MESSAGE, 0, 0, buf), false);
 		    }
 
